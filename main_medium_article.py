@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Use open sourced chat prompt as part of ReAct for QA use case. https://smith.langchain.com/hub/langchain-ai/retrieval-qa-chat
     retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
 
-    # Create chain by stuffing docs into llm prompt aided by promt and model
+    # Create Runnable chain by stuffing docs into llm prompt aided by promt and model
     combine_docs_chain = create_stuff_documents_chain(
         llm=llm,
         prompt=retrieval_qa_chat_prompt
@@ -60,9 +60,11 @@ if __name__ == "__main__":
 
     # Invoke and get result
     result = retrieval_chain.invoke(input={"input": query})
-    print(result.context)
+    print(result["answer"])
 
-
+    print()
+    print("-------------------------")
+    print("With Custom Template")
     # Customised template instead of retrieval QA chat prompt template from langchain hub. Context will be formated according to our needs
 
     custom_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say I do not know and do not attempt to make up an answer. The answer should be as concise as possible, limited to three sentences at maximum. Always say thanks "thanks for asking!" at the end of the answer.
@@ -73,13 +75,14 @@ if __name__ == "__main__":
 
     Helpful Answer:"""
     custom_rag_prompt = PromptTemplate.from_template(template=custom_template)
-    
+    # LCEL, output type will be determine on the final chain involved, which is AImessage
     rag_chain = (
         {"context": vectorstore.as_retriever() | format_docs, "question": RunnablePassthrough()} #Propagate question thru to LLM call
-        | custom_rag_prompt 
+        | custom_rag_prompt
         | llm
     )
 
     # Invoke and get result
-    custom_result = retrieval_chain.invoke(input={"input": query})
-    print(custom_result.context)
+    custom_result = rag_chain.invoke(input=query)
+    print(custom_result.content)
+    print(type(custom_result))
