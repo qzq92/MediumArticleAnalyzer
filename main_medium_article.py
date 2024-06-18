@@ -84,6 +84,6 @@ if __name__ == "__main__":
     )
 
     # Invoke and get result
-    custom_result = rag_chain.invoke(query)
+    custom_result = rag_chain.invoke(input=query)
     print(custom_result.content)
     print(type(custom_result))
