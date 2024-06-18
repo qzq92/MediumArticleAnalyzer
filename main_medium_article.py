@@ -74,8 +74,9 @@ if __name__ == "__main__":
     Question: {question}
 
     Helpful Answer:"""
+    # Define prompt template for use as chain
     custom_rag_prompt = PromptTemplate.from_template(template=custom_template)
-    # LCEL, output type will be determine on the final chain involved, which is AImessage
+    # LCEL, output type will be determine on the final chain involved, which is langchain_core.messages.ai.AIMessage
     rag_chain = (
         {"context": vectorstore.as_retriever() | format_docs, "question": RunnablePassthrough()} #Propagate question thru to LLM call
         | custom_rag_prompt
@@ -83,6 +84,6 @@ if __name__ == "__main__":
     )
 
     # Invoke and get result
-    custom_result = rag_chain.invoke(input=query)
+    custom_result = rag_chain.invoke(query)
     print(custom_result.content)
     print(type(custom_result))
