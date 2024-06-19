@@ -93,6 +93,7 @@ if __name__ == "__main__":
     rag_pdf_chain_openai = (
         retrieval | retrieval_qa_chat_prompt | llm_chatopenai
     )
+    
     # Invoke with require template input(chat prompt) and get result
     result = rag_pdf_chain_openai.invoke(input=query)
     print(result.content)
