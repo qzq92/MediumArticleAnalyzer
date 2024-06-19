@@ -3,10 +3,9 @@ from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.prompts import PromptTemplate
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline, HuggingFaceEndpoint
+from langchain_openai import ChatOpenAI
+from langchain_huggingface import HuggingFaceEmbeddings,HuggingFaceEndpoint
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from transformers import AutoTokenizer, pipeline
 from langchain import hub
 from langchain.chains import RetrievalQA
 from langchain_core.runnables import RunnablePassthrough
@@ -93,7 +92,7 @@ if __name__ == "__main__":
     rag_pdf_chain_openai = (
         retrieval | retrieval_qa_chat_prompt | llm_chatopenai
     )
-    
+
     # Invoke with require template input(chat prompt) and get result
     result = rag_pdf_chain_openai.invoke(input=query)
     print(result.content)
