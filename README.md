@@ -116,7 +116,7 @@ Specifically for *main_pdf_file.py*, differences include the following:
 
 4. Experimenting with HuggingFaceEndpoints package
 ```
- callbacks = [StreamingStdOutCallbackHandler()]
+    callbacks = [StreamingStdOutCallbackHandler()]
     # initialize Hub LLM with model. Note the model size
     hub_llm = HuggingFaceEndpoint(
         repo_id = os.environ.get("HUGGINGFACEHUB_LLM_QA_MODEL_NAME"),
