@@ -41,7 +41,8 @@ python main_pdf_file.py
 python main_medium_article.py
 ```
 
-## Deviation of codebase from Udemy's course content
+## Difference in codebase from Udemy's course content
+
 Specifically for *main_pdf_file.py*, differences include the following:
 1) the use of vector store embedding was changed from OpenAIEmbedding to HuggingFaceEmbeddings;
 ```
@@ -79,6 +80,7 @@ Specifically for *main_pdf_file.py*, differences include the following:
         retrieval | retrieval_qa_chat_prompt | llm_chatopenai
     )
 ```
+
 3. Experimenting with RetrievalQA as chain and custom prompts:
 ```
     qa = RetrievalQA.from_chain_type(
@@ -138,6 +140,7 @@ Specifically for *main_pdf_file.py*, differences include the following:
 ```
 
 ## Programming languages/tools involved
+
 - Python
 - Langchain
     - ChatOpenAI
@@ -147,7 +150,8 @@ Specifically for *main_pdf_file.py*, differences include the following:
     - VectorStores: Pinecone, FAISS
     - HuggingFaceEmbeddings, HuggingFaceHub, HuggingFaceEndPoints
 
-## References
+## References for Huggingface as part of exploration
+
 - https://huggingface.co/docs/transformers/en/tasks/question_answering
 - Differences with Langchain Retrieval (.from_llm and without): https://stackoverflow.com/questions/77033163/whats-the-difference-about-using-langchains-retrieval-with-from-llm-or-defini
 - Prompt Versioning: https://docs.smith.langchain.com/old/cookbook/hub-examples/retrieval-qa-chain-versioned
