@@ -11,14 +11,15 @@ Please note that the following API requires the use of API key to work and are n
 ## Environment file to edit
 Please create an *.env* file with the following parameters. 
 
-The *TEXT_FILEPATH* and *PDF_FILEPATH* are variables referencing to sample *Medium* and *pdf* articles whcih are to be downloaded from online as part of RAG (which sample articles are provided under *files* subfolder), while *PINECONE_INDEX* refers to the name of Pinecone vector database created to store embedded document chunks. The use of OPENAI_API_KEY is to facilitate the llm models offered by OpenAI (Example: gpt-3.5-turbo)
+The *TEXT_FILEPATH* and *PDF_FILEPATH* are variables referencing to sample *Medium* and *pdf* articles whcih are to be downloaded from online as part of RAG (which sample articles are provided under *files* subfolder), while *PINECONE_INDEX* refers to the name of Pinecone vector database created to store embedded document chunks. The use of *OPENAI_API_KEY* is to facilitate the llm models offered by OpenAI (Example: gpt-3.5-turbo), while *HUGGINGFACEHUB_API_TOKEN* is used for accessing LLM models offered by HuggingFace Platform.
 ```
 OPENAI_API_KEY = <YOUR API KEY>
 PINECONE_INDEX = <CREATED PINECONE INDEX>
 TEXT_FILEPATH = "files/mediumblog1.txt"
 PDF_FILEPATH = "files/ReAct.pdf"
+HUGGINGFACEHUB_API_TOKEN = <YOUR API KEY>
 
-# Optional if you are not using LangSmith for tracking llm utilisation related metrics
+# Following are optional if you are not using LangSmith for tracking llm utilisation related metrics
 LANGCHAIN_API_KEY = <YOUR API KEY>
 LANGCHAIN_TRACING_V2 = true
 LANGCHAIN_PROJECT = <NAME FOR YOUR PROJECT>
@@ -40,6 +41,102 @@ python main_pdf_file.py
 python main_medium_article.py
 ```
 
+## Deviation of codebase from Udemy's course content
+Specifically for *main_pdf_file.py*, differences include the following:
+1) the use of vector store embedding was changed from OpenAIEmbedding to HuggingFaceEmbeddings;
+```
+    ## Old code involving OpenAI service
+    #embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    
+
+    # Use of huggingface's Google t5-base as example
+    embedding_model_id = 'sentence-transformers/all-MiniLM-L6-v2'
+    
+    embeddings = HuggingFaceEmbeddings(
+        model_name=embedding_model_id,
+        model_kwargs={'device':'cpu'}
+    )
+```
+
+2) Use of LCEL declaration for LangChain declaration.
+```
+    llm_chatopenai = ChatOpenAI(
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        model="gpt-3.5-turbo",
+        temperature=0
+    )
+    print()
+    print("LCEL implementation with retrieval > chat prompt > LLM")
+    print("----------------------------")
+    # For retrieval dict, you need to identify the variables in the prompt. Contains variables context/input
+    retrieval = {
+        "context": vectorstore.as_retriever() | format_docs,
+        "input": RunnablePassthrough(),
+    }
+
+    # Feed dictionary to retrieval qa_chat_prompt followed by LLM to parse.
+    rag_pdf_chain_openai = (
+        retrieval | retrieval_qa_chat_prompt | llm_chatopenai
+    )
+```
+3. Experimenting with RetrievalQA as chain and custom prompts:
+```
+    qa = RetrievalQA.from_chain_type(
+        llm=llm_chatopenai,
+        chain_type="refine",
+        retriever=retriever,
+    )
+    result = qa.invoke({"query": query})
+    print(result["result"])
+
+    ...
+
+
+    # Create Prompt
+    template = dedent("""\
+        Answer any use questions based solely on the context below:
+        
+        <context>
+        
+        {context}
+
+        </context>
+        
+        Question: {question}
+        Answer:"""
+    )
+    prompt = PromptTemplate.from_template(template)
+
+    qa = RetrievalQA.from_chain_type(
+        llm=llm_chatopenai,
+        retriever=vectorstore.as_retriever(),
+        chain_type_kwargs={"prompt": prompt},  # The prompt is added here
+    )
+```
+
+4. Experimenting with HuggingFaceEndpoints package
+```
+ callbacks = [StreamingStdOutCallbackHandler()]
+    # initialize Hub LLM with model. Note the model size
+    hub_llm = HuggingFaceEndpoint(
+        repo_id = os.environ.get("HUGGINGFACEHUB_LLM_QA_MODEL_NAME"),
+        temperature = 0.01,
+        top_k = 5,
+        huggingfacehub_api_token = os.environ.get("HUGGINGFACEHUB_API_TOKEN"),
+        max_new_tokens = int(os.environ.get("HUGGINGFACEHUB_LLM_QA_MODEL_MAX_TOKEN")),
+        callbacks = callbacks
+    )
+
+    qa = RetrievalQA.from_chain_type(
+        llm=hub_llm,
+        retriever=vectorstore.as_retriever(),
+        chain_type_kwargs={"prompt": prompt},  # The prompt is added here
+    )
+    result = qa.invoke({"query": query})
+    print(result["result"])
+    print()
+```
+
 ## Programming languages/tools involved
 - Python
 - Langchain
@@ -48,6 +145,13 @@ python main_medium_article.py
     - RAG related chains: create_stuff_documents_chain, create_retrieval_chain
     - TextSplitters
     - VectorStores: Pinecone, FAISS
+    - HuggingFaceEmbeddings, HuggingFaceHub, HuggingFaceEndPoints
+
+## References
+- https://huggingface.co/docs/transformers/en/tasks/question_answering
+- Differences with Langchain Retrieval (.from_llm and without): https://stackoverflow.com/questions/77033163/whats-the-difference-about-using-langchains-retrieval-with-from-llm-or-defini
+- Prompt Versioning: https://docs.smith.langchain.com/old/cookbook/hub-examples/retrieval-qa-chain-versioned
+- HuggingFace Endpoints: https://python.langchain.com/v0.1/docs/integrations/llms/huggingface_endpoint/
 
 ## Acknowledgement and Credits
 
