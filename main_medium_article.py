@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_pinecone import PineconeVectorStore
-
 from langchain import hub
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
@@ -25,8 +24,10 @@ def format_docs(docs) -> str:
 
 if __name__ == "__main__":
     print("Retreiving...")
-
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    
+    embeddings = OpenAIEmbeddings(
+        openai_api_key=os.environ.get("OPENAI_API_KEY"), model="text-embedding-ada-002"
+    )
     llm = ChatOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
     print("Query without RAG, pure llm inference with pretrained knowledge.")
