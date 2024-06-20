@@ -8,7 +8,7 @@ In particular, a LCEL code equivalent implementation for RAG is included under *
 Please note that the following API requires the use of API key to work and is not free.
 - *Langchain's ChatOpenAi* to chat with OpenAI's GPT-3.5-Turbo model (https://api.python.langchain.com/en/latest/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html).
 
-Other APIs that were used under Free tier
+Other APIs used are free with limitations:
 - PineCone VectorStore
 - LangSmith
 
@@ -32,6 +32,7 @@ LANGCHAIN_PROJECT = <NAME FOR YOUR PROJECT>
 For more information on Langsmith, refer to https://www.langchain.com/langsmith
 
 ## Important note on the use of Pinecone VectorStore for Document embedding
+
 The index dimensions for this repo is 1536 which is based on OpenAI default embedding model "text-embedding-ada-002". In the event that other embedding models are to be used, a new Pinecone index with compatible dimension is to be created.
 
 ## Installation and execution
