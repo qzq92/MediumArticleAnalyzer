@@ -35,8 +35,33 @@ For more information on Langsmith, refer to https://www.langchain.com/langsmith
 
 The index dimensions for this repo is 1536 which is based on OpenAI default embedding model "text-embedding-ada-002". In the event that other embedding models are to be used, a new Pinecone index with compatible dimension is to be created.
 
+## Environment file to edit
+Please create an *.env* file with the following parameters. PYTHONPATH is required to be filled to ensure successful folder imports in project.
+
+```
+OPENAI_API_KEY = <YOUR API KEY>
+TEXT_FILEPATH = <Path to Text file of a Medium article saved in repository>, (E.g "files/mediumblog1.txt")
+PDF_FILEPATH = <Path to a Pdf file saved in  repository> (E.g "files/ReAct.pdf")
+PINECONE_INDEX = <YOUR PINECONE INDEX CREATED for storing embedded documents> (Please note the dimensions to be created must correspond to output dimension of HUGGINGFACEHUB_VECTORDB_EMBEDDING_MODEL_NAME)
+PINECONE_API_KEY = <YOUR API KEY>
+HUGGINGFACEHUB_API_TOKEN = <YOUR API KEY>
+HUGGINGFACEHUB_VECTORDB_EMBEDDING_MODEL_NAME = <YOUR embedding model> (E.g "sentence-transformers/all-MiniLM-L6-v2")
+HUGGINGFACEHUB_LLM_QA_MODEL_NAME = <YOUR LLM  Question-Answering model> (E.g "mistralai/Mistral-7B-Instruct-v0.2")
+HUGGINGFACEHUB_LLM_QA_MODEL_MAX_TOKEN = "<HUGGINGFACEHUB_LLM_QA_MODEL_NAME> (E.g 250 for mistralai/Mistral-7B-Instruct-v0.2)
+
+# Optional if you are not using LangSmith for tracking llm utilisation related metrics
+LANGCHAIN_API_KEY=<YOUR API KEY>
+LANGCHAIN_TRACING_V2=true
+```
+
+**Please note: Invalid HUGGINGFACEHUB_LLM_QA_MODEL_MAX_TOKEN set would result in errors in getting LLM to generate output.**
+
+For more information on Langsmith, refer to [here](https://www.langchain.com/langsmith).
+For more information on HuggingFace embedding/LLM models, refer [here](https://huggingface.co/models).
+
+
 ## Installation and execution
-Please use Anaconda distribution to install the necessary libraries with the following command
+Please use Anaconda distribution to install the necessary libraries with the following command after making edits to the *.env* file as indicated above
 
 ```
 conda env create -f environment.yml
