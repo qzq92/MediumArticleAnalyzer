@@ -36,6 +36,7 @@ For more information on Langsmith, refer to https://www.langchain.com/langsmith
 The index dimensions for this repo is 1536 which is based on OpenAI default embedding model "text-embedding-ada-002". In the event that other embedding models are to be used, a new Pinecone index with compatible dimension is to be created.
 
 ## Environment file to edit
+
 Please create an *.env* file with the following parameters. PYTHONPATH is required to be filled to ensure successful folder imports in project.
 
 ```
@@ -54,7 +55,7 @@ LANGCHAIN_API_KEY=<YOUR API KEY>
 LANGCHAIN_TRACING_V2=true
 ```
 
-**Please note: Invalid HUGGINGFACEHUB_LLM_QA_MODEL_MAX_TOKEN set would result in errors in getting LLM to generate output.**
+**Please note: Invalid HUGGINGFACEHUB_LLM_QA_MODEL_MAX_TOKEN set would result in errors in getting LLM to generate output due to incompatibility or model limits. Please check online for more information on the models you are using.**
 
 For more information on Langsmith, refer to [here](https://www.langchain.com/langsmith).
 For more information on HuggingFace embedding/LLM models, refer [here](https://huggingface.co/models).
@@ -77,7 +78,8 @@ python main_medium_article.py
 ## Difference in codebase from Udemy's course content
 
 Specifically for *main_pdf_file.py*, differences include the following:
-1) the use of vector store embedding was changed from OpenAIEmbedding to HuggingFaceEmbeddings;
+1) the use of vector store embedding was changed from OpenAIEmbedding to HuggingFaceEmbeddingss
+
 ```
     ## Old code involving OpenAI service
     #embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
@@ -92,7 +94,8 @@ Specifically for *main_pdf_file.py*, differences include the following:
     )
 ```
 
-2) Use of LCEL declaration for LangChain declaration.
+2) Use of LCEL declaration for LangChain declaration
+
 ```
     llm_chatopenai = ChatOpenAI(
         api_key=os.environ.get("OPENAI_API_KEY"),
@@ -114,7 +117,8 @@ Specifically for *main_pdf_file.py*, differences include the following:
     )
 ```
 
-3. Experimenting with RetrievalQA as chain and custom prompts:
+3. Experimenting with RetrievalQA as chain and custom prompts
+
 ```
     qa = RetrievalQA.from_chain_type(
         llm=llm_chatopenai,
@@ -150,6 +154,7 @@ Specifically for *main_pdf_file.py*, differences include the following:
 ```
 
 4. Experimenting with HuggingFaceEndpoints package
+
 ```
     callbacks = [StreamingStdOutCallbackHandler()]
     # initialize Hub LLM with model. Note the model size
