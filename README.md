@@ -186,7 +186,8 @@ Specifically for *main_pdf_file.py*, differences include the following:
     - RAG related chains: create_stuff_documents_chain, create_retrieval_chain
     - TextSplitters
     - VectorStores: Pinecone, FAISS
-    - HuggingFaceEmbeddings, HuggingFaceHub, HuggingFaceEndPoints
+    - HuggingFaceEmbeddings, HuggingFaceHub, HuggingFaceEndPoint
+    - RetrievalQA for Question-Answering on local documents
 
 ## References for Huggingface as part of exploration
 
