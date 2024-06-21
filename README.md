@@ -184,7 +184,7 @@ Specifically for *main_pdf_file.py*, differences include the following:
     - ChatOpenAI
     - Hubs for Question-Answering RAG templates: "langchain-ai/retrieval-qa-chat"
     - RAG related chains: create_stuff_documents_chain, create_retrieval_chain
-    - TextSplitters
+    - TextSplitters: CharacterTextSplitter
     - VectorStores: Pinecone, FAISS
     - HuggingFaceEmbeddings, HuggingFaceHub, HuggingFaceEndPoint
     - RetrievalQA for Question-Answering on local documents
